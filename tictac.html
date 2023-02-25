@@ -1,0 +1,241 @@
+<html>  
+    <style type="text/css">   
+        
+        body { 
+            text-align: center;  
+        }
+        .box
+        {
+            background: rgb(162, 218, 162);
+            border: white 2px solid;
+            width: 100px;
+            height: 100px; 
+            padding: 10px;
+            margin: 10px 10px;
+            cursor: pointer;
+            display: inline-block;  
+        }
+
+        .row {
+            display: flex;  
+            flex-wrap: wrap; 
+            width: 100%; 
+            justify-content: center;   
+        } 
+
+        .header { 
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; 
+            font-size: 40px; 
+            padding-bottom: 20px;  
+            text-align: center; 
+        }    
+
+        button { 
+            border-radius: 5px; 
+            background-color: rgb(204, 207, 255); 
+            color: black; 
+            border-color: black; 
+            font-size: 16px; 
+        } 
+
+        button.hover { 
+            cursor: pointer; 
+        }
+
+        .title { 
+            padding: 20px;
+        }
+
+
+        #player { 
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; 
+            font-size: 20px;  
+            padding-top: 30px;
+            padding-bottom: 30px; 
+            text-align: center;
+        }   
+
+        #playerWin { 
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;  
+            font-size: 20px; 
+            padding-top: 30px; 
+            text-align: center; 
+        }
+
+    </style> 
+
+    <head> 
+        <title> tic tac toe game </title>
+    </head>  
+    <body>  
+        <div class="header">
+            <div class="title">Let's Play Tic Tac Toe</div> 
+            <button id="reset" onclick="reset()"> Reset </button> 
+        </div>
+
+        <div id="player"></div>
+        <div id="grid"></div>   
+        <div id="playerWin"></div>
+          
+
+    <script>    
+
+    var player = "X";  
+    var XorO = "";  
+    const x = "X"; 
+    const o = "O"
+    var count = 0;   
+
+
+    /* builds the tic tac toe board / initializes classes */
+    for (var t = 0; t < 3; t++) 
+    { 
+        var row = document.createElement('div'); 
+        row.className = "row"; 
+        for (var y = 0; y < 3; y++) 
+        { 
+            var box = document.createElement('div'); 
+            box.className = "box";  
+            row.appendChild(box); 
+        } 
+        document.getElementById('grid').appendChild(row);
+    }  
+
+    /* calls mark function on all the boxes */
+    var boxes = document.getElementsByClassName("box");
+    var box;
+    for (var i = 0; i < boxes.length; i++) {
+        box = boxes[i];
+        box.onclick = mark;
+    }
+
+
+    /* sets start to player x */
+    document.getElementById("player").innerText = 
+            "Player X's turn";   
+    
+    /* marks tile x or o depending on the player */
+    function mark(e) 
+    {     
+        
+        /* sets a variable to either x or o depending on the turn */
+        if (player == "X") { 
+            XorO = x;
+        } else { 
+            XorO = o;
+        } 
+        if (e.target.innerHTML == "") { 
+            e.target.innerHTML = XorO;  
+        } 
+
+        player = playerTurn(player); 
+
+
+        /* determines if someone has won */
+        var winOrLose = winningConditions();
+        if (winOrLose == true) {  
+            document.getElementById("player").innerText = "";
+            return; 
+        }
+        
+        /* determines if there is a tie */
+        var count = 0;
+        var boxes = document.getElementsByClassName("box");
+        for (var tie = 0; tie < 9; tie++) 
+        { 
+            if (boxes[tie].innerHTML != "") { 
+                count++;
+            }
+        }  
+
+        if (count == 9) { 
+            document.getElementById("playerWin").innerText = "Tie Game!!";  
+            document.getElementById("player").innerText = "";
+            return;
+        }
+
+    }
+
+    /* determines who's turn it is */
+    function playerTurn(player) 
+    {
+        if (player == "O") 
+        {   
+            document.getElementById("player").innerText = 
+            "Player X's turn";   
+            player = "X";
+        } else if (player == "X")
+        {  
+            document.getElementById("player").innerText = 
+            "Player O's turn"; 
+            player = "O";
+        }   
+        return player;
+    }    
+    
+    /* resets the game to play again */
+    function reset()  
+    {   
+        document.getElementById("player").innerText = 
+            "Player X's turn";   
+        player = x;   
+
+        document.getElementById("playerWin").innerText = "";
+
+        var boxes = document.getElementsByClassName("box");
+        for (var i = 0; i < boxes.length; i++) {
+            boxes[i].innerHTML = "";
+        }
+    }
+
+    /* determines if there is a win */
+    function winningConditions() 
+    {  
+        var boxes = document.getElementsByClassName("box"); 
+        console.log(boxes[0].innerHTML);
+        for (var rows = 0; rows < 9; rows += 3) 
+        { 
+            if (boxes[rows].innerHTML == "X" &&  boxes[rows + 1].innerHTML == "X" && boxes[rows + 2].innerHTML == "X") 
+            { 
+                document.getElementById("playerWin").innerText = "Player X wins"; 
+                return true;
+            } else if (boxes[rows].innerHTML == "O" && boxes[rows + 1].innerHTML == "O" && boxes[rows + 2].innerHTML == "O") 
+            { 
+                document.getElementById("playerWin").innerText = "Player O wins"; 
+                return true;
+            } 
+        }  
+
+        for (var cols = 0; cols < 3; cols++) 
+        { 
+            if (boxes[cols].innerHTML == "X" && boxes[cols + 3].innerHTML == "X" 
+            && boxes[cols + 6].innerHTML == "X") 
+            { 
+                document.getElementById("playerWin").innerText = "Player X wins"; 
+                return true;
+            } else if (boxes[cols].innerHTML == "O" && boxes[cols + 3].innerHTML == "O" 
+            && boxes[cols + 6].innerHTML == "O") 
+            { 
+                document.getElementById("playerWin").innerText = "Player O wins"; 
+                return true;
+            }
+        } 
+
+        if ((boxes[0].innerHTML == "X" && boxes[4].innerHTML == "X" && boxes[8].innerHTML == "X") || 
+            (boxes[2].innerHTML == "X" && boxes[4].innerHTML == "X" && boxes[6].innerHTML == "X")) 
+        {
+            document.getElementById("playerWin").innerText = "Player X wins"; 
+            return true;
+        } 
+        else if ((boxes[0].innerHTML == "O" && boxes[4].innerHTML == "O" && boxes[8].innerHTML == "O") || 
+            (boxes[2].innerHTML == "O" && boxes[4].innerHTML == "O" && boxes[6].innerHTML == "O"))
+        { 
+            document.getElementById("playerWin").innerText = "Player O wins"; 
+            return true;
+        } 
+        return false;
+    }
+
+    </script>
+    </body>
+</html> 
